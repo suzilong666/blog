@@ -1,0 +1,1 @@
+import{_ as e,o as t,c as s}from"./chunks/framework.Dzv1qGE5.js";const m=JSON.parse('{"title":"","description":"","frontmatter":{},"headers":[],"relativePath":"css/布局.md","filePath":"css/布局.md"}'),a={name:"css/布局.md"};function c(r,o,n,_,p,d){return t(),s("div")}const f=e(a,[["render",c]]);export{m as __pageData,f as default};
