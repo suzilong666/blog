@@ -1,0 +1,1 @@
+import{_ as e,o as t,c as a,ah as o}from"./chunks/framework.Dzv1qGE5.js";const m=JSON.parse('{"title":"资源","description":"","frontmatter":{},"headers":[],"relativePath":"other/资源.md","filePath":"other/资源.md"}'),n={name:"other/资源.md"};function _(p,r,s,c,i,l){return t(),a("div",null,[...r[0]||(r[0]=[o("",5)])])}const f=e(n,[["render",_]]);export{m as __pageData,f as default};
