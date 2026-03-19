@@ -23,6 +23,7 @@ export default defineConfig({
       { text: 'Css', link: '/css/引入方式与优先级' },
       { text: 'JavaScript', link: '/javascript/basic/数据类型' },
       { text: '浏览器', link: '/browser/浏览器渲染原理' },
+      { text: '工程化', link: '/engineering/Husky' },
       // { text: '网络', link: '/network/' },
       {
         text: '框架',
