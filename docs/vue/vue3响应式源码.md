@@ -1,143 +1,102 @@
 # vue3响应式源码
 
-文件位置：packages/reactivity/src/reactive.ts
-```ts
-export function reactive(target: object) {
-  if (isReadonly(target)) {
-    return target
-  }
-  return createReactiveObject(
-    target,
-    false,
-    mutableHandlers,
-    mutableCollectionHandlers,
-    reactiveMap,
-  )
-}
-```
-
-```ts
-function createReactiveObject(
-  target: Target,
-  isReadonly: boolean,
-  baseHandlers: ProxyHandler<any>,
-  collectionHandlers: ProxyHandler<any>,
-  proxyMap: WeakMap<Target, any>,
-) {
-  if (!isObject(target)) {
-    return target
-  }
-  if (
-    target[ReactiveFlags.RAW] &&
-    !(isReadonly && target[ReactiveFlags.IS_REACTIVE])
-  ) {
-    return target
-  }
-  // only specific value types can be observed.
-  const targetType = getTargetType(target)
-  if (targetType === TargetType.INVALID) {
-    return target
-  }
-  // 通过 WeakMap 缓存target到proxy的映射，确保同一个target只生成一个proxy，避免重复代理导致的问题，也节省内存。
-  const existingProxy = proxyMap.get(target)
-  if (existingProxy) {
-    return existingProxy
-  }
-  // 根据目标类型选择使用集合处理器还是基础处理器。集合类型（Map、Set 等）使用 collectionHandlers，其他（普通对象、数组）使用 baseHandlers。这样区分是因为集合的访问方式特殊，例如 Map 的 get/set 操作需要额外的依赖收集。
-  const proxy = new Proxy(
-    target,
-    targetType === TargetType.COLLECTION ? collectionHandlers : baseHandlers,
-  )
-  proxyMap.set(target, proxy)
-  return proxy
-}
-```
-
-
-文件位置：packages/reactivity/src/baseHandlers.ts
 ```js
-class BaseReactiveHandler implements ProxyHandler<Target> {
-  constructor(
-    protected readonly _isReadonly = false,
-    protected readonly _isShallow = false,
-  ) {}
+// 用于存储所有响应式对象的依赖关系
+// WeakMap: 键是目标对象，值是一个 Map（属性 -> 依赖集合）
+const targetMap = new WeakMap();
 
-  get(target: Target, key: string | symbol, receiver: object): any {
-    if (key === ReactiveFlags.SKIP) return target[ReactiveFlags.SKIP]
+// 当前正在执行的副作用函数
+let activeEffect = null;
 
-    const isReadonly = this._isReadonly,
-      isShallow = this._isShallow
-    if (key === ReactiveFlags.IS_REACTIVE) {
-      return !isReadonly
-    } else if (key === ReactiveFlags.IS_READONLY) {
-      return isReadonly
-    } else if (key === ReactiveFlags.IS_SHALLOW) {
-      return isShallow
-    } else if (key === ReactiveFlags.RAW) {
-      if (
-        receiver ===
-          (isReadonly
-            ? isShallow
-              ? shallowReadonlyMap
-              : readonlyMap
-            : isShallow
-              ? shallowReactiveMap
-              : reactiveMap
-          ).get(target) ||
-        // receiver is not the reactive proxy, but has the same prototype
-        // this means the receiver is a user proxy of the reactive proxy
-        Object.getPrototypeOf(target) === Object.getPrototypeOf(receiver)
-      ) {
-        return target
+/**
+ * 将普通对象转换为响应式对象
+ * 使用 Proxy 拦截 get/set 操作
+ */
+function reactive(target) {
+  const handler = {
+    get(target, key, receiver) {
+      // 收集依赖
+      track(target, key);
+      // 返回属性值，确保 this 指向正确
+      return Reflect.get(target, key, receiver);
+    },
+    set(target, key, value, receiver) {
+      const oldValue = target[key];
+      const result = Reflect.set(target, key, value, receiver);
+      if (oldValue !== value) {
+        // 值发生变化时触发更新
+        trigger(target, key);
       }
-      // early return undefined
-      return
-    }
+      return result;
+    },
+  };
+  return new Proxy(target, handler);
+}
 
-    const targetIsArray = isArray(target)
+/**
+ * 在 get 拦截器中收集依赖
+ */
+function track(target, key) {
+  if (!activeEffect) return;
+  let depsMap = targetMap.get(target);
+  if (!depsMap) {
+    targetMap.set(target, (depsMap = new Map()));
+  }
+  let dep = depsMap.get(key);
+  if (!dep) {
+    depsMap.set(key, (dep = new Set()));
+  }
+  dep.add(activeEffect);
+}
 
-    if (!isReadonly) {
-      let fn: Function | undefined
-      if (targetIsArray && (fn = arrayInstrumentations[key])) {
-        return fn
-      }
-      if (key === 'hasOwnProperty') {
-        return hasOwnProperty
-      }
-    }
-
-    const res = Reflect.get(
-      target,
-      key,
-      isRef(target) ? target : receiver,
-    )
-
-    if (isSymbol(key) ? builtInSymbols.has(key) : isNonTrackableKeys(key)) {
-      return res
-    }
-
-    if (!isReadonly) {
-      track(target, TrackOpTypes.GET, key)
-    }
-
-    if (isShallow) {
-      return res
-    }
-
-    if (isRef(res)) {
-      // ref unwrapping - skip unwrap for Array + integer key.
-      const value = targetIsArray && isIntegerKey(key) ? res : res.value
-      return isReadonly && isObject(value) ? readonly(value) : value
-    }
-
-    if (isObject(res)) {
-      // Convert returned value into a proxy as well. we do the isObject check
-      // here to avoid invalid value warning. Also need to lazy access readonly
-      // and reactive here to avoid circular dependency.
-      return isReadonly ? readonly(res) : reactive(res)
-    }
-
-    return res
+/**
+ * 在 set 拦截器中触发更新
+ */
+function trigger(target, key) {
+  const depsMap = targetMap.get(target);
+  if (!depsMap) return;
+  const dep = depsMap.get(key);
+  if (dep) {
+    dep.forEach((effect) => effect());
   }
 }
+
+/**
+ * 注册副作用函数
+ * 立即执行一次，并建立依赖关系
+ */
+function effect(fn) {
+  const effectFn = () => {
+    try {
+      activeEffect = effectFn;
+      fn();
+    } finally {
+      activeEffect = null;
+    }
+  };
+  effectFn();
+}
+
+// ------------------- 使用示例 -------------------
+const state = reactive({
+  count: 0,
+  name: "Vue3",
+});
+
+// 第一个副作用：依赖 count 和 name
+effect(() => {
+  console.log(`Count is: ${state.count}`);
+});
+
+// 第二个副作用：只依赖 name
+effect(() => {
+  console.log(`Name is: ${state.name}`);
+});
+
+// 修改数据，会触发相应的副作用重新执行
+console.log("--- 修改 count ---");
+state.count++;
+
+console.log("--- 修改 name ---");
+state.name = "Reactivity";
 ```
