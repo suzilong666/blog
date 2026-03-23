@@ -215,7 +215,10 @@ export default defineConfig({
         },
         {
           text: "模块化与组件化",
-          items: [{ text: "模块化", link: "/engineering/模块化" }],
+          items: [
+            { text: "JS模块化", link: "/engineering/JS模块化" },
+            { text: "CSS模块化", link: "/engineering/CSS模块化" },
+          ],
         },
         {
           text: "开发效率与构建工具",
