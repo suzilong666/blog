@@ -225,6 +225,16 @@ export default defineConfig({
         },
         {
           text: "代码质量与规范",
+          items: [
+            {
+              text: "代码规范：ESLint + Prettier 在前端工程化中的最佳实践",
+              link: "/engineering/代码规范：ESLint + Prettier 在前端工程化中的最佳实践",
+            },
+            {
+              text: "前端工程化必备：husky + lint-staged 实战指南",
+              link: "/engineering/前端工程化必备：husky + lint-staged 实战指南",
+            },
+          ],
         },
         {
           text: "测试与质量保障",
