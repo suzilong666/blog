@@ -34,6 +34,7 @@ export default defineConfig({
       },
       { text: "性能", link: "/performance/vendor文件体积过大如何解决" },
       { text: "其他", link: "/other/资源" },
+      { text: "Python", link: "/python/basic/环境搭建" },
     ],
     // 侧边栏
     sidebar: {
@@ -250,6 +251,67 @@ export default defineConfig({
         {
           text: "资源",
           items: [{ text: "资源", link: "/other/资源" }],
+        },
+      ],
+      python: [
+        {
+          text: "基础",
+          items: [
+            { text: "环境搭建", link: "/python/basic/环境搭建" },
+            { text: "变量与数据类型", link: "/python/basic/变量与数据类型" },
+            { text: "运算符", link: "/python/basic/运算符" },
+            { text: "条件语句", link: "/python/basic/条件语句" },
+            { text: "循环语句", link: "/python/basic/循环语句" },
+            { text: "字符串", link: "/python/basic/字符串" },
+            { text: "列表与元组", link: "/python/basic/列表与元组" },
+            { text: "字典与集合", link: "/python/basic/字典与集合" },
+          ],
+        },
+        {
+          text: "核心",
+          items: [
+            { text: "函数基础", link: "/python/core/函数基础" },
+            { text: "参数传递", link: "/python/core/参数传递" },
+            { text: "作用域与命名空间", link: "/python/core/作用域与命名空间" },
+            { text: "模块与包", link: "/python/core/模块与包" },
+            { text: "文件操作", link: "/python/core/文件操作" },
+            { text: "异常处理", link: "/python/core/异常处理" },
+            { text: "面向对象基础", link: "/python/core/面向对象基础" },
+            { text: "类与对象", link: "/python/core/类与对象" },
+            { text: "继承与多态", link: "/python/core/继承与多态" },
+            { text: "魔术方法", link: "/python/core/魔术方法" },
+          ],
+        },
+        {
+          text: "进阶",
+          items: [
+            { text: "装饰器", link: "/python/advanced/装饰器" },
+            { text: "生成器与迭代器", link: "/python/advanced/生成器与迭代器" },
+            { text: "上下文管理器", link: "/python/advanced/上下文管理器" },
+            { text: "闭包", link: "/python/advanced/闭包" },
+            { text: "Lambda 表达式", link: "/python/advanced/Lambda 表达式" },
+            { text: "推导式", link: "/python/advanced/推导式" },
+            { text: "正则表达式", link: "/python/advanced/正则表达式" },
+            { text: "并发编程", link: "/python/advanced/并发编程" },
+            { text: "异步编程", link: "/python/advanced/异步编程" },
+          ],
+        },
+        {
+          text: "高级",
+          items: [
+            { text: "内存管理", link: "/python/expert/内存管理" },
+            { text: "GIL 全局解释器锁", link: "/python/expert/GIL 全局解释器锁" },
+            { text: "类型提示", link: "/python/expert/类型提示" },
+            { text: "测试与调试", link: "/python/expert/测试与调试" },
+          ],
+        },
+        {
+          text: "工具",
+          items: [
+            { text: "pip", link: "/python/tools/pip" },
+            { text: "虚拟环境", link: "/python/tools/虚拟环境" },
+            { text: "代码规范", link: "/python/tools/代码规范" },
+          ],
         },
       ],
     },
