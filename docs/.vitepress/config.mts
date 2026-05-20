@@ -294,6 +294,7 @@ export default defineConfig({
             { text: "正则表达式", link: "/python/advanced/正则表达式" },
             { text: "并发编程", link: "/python/advanced/并发编程" },
             { text: "异步编程", link: "/python/advanced/异步编程" },
+            { text: "元编程", link: "/python/advanced/元编程" },
           ],
         },
         {
@@ -301,6 +302,8 @@ export default defineConfig({
           items: [
             { text: "内存管理", link: "/python/expert/内存管理" },
             { text: "GIL 全局解释器锁", link: "/python/expert/GIL 全局解释器锁" },
+            { text: "性能优化", link: "/python/expert/性能优化" },
+            { text: "设计模式", link: "/python/expert/设计模式" },
             { text: "类型提示", link: "/python/expert/类型提示" },
             { text: "测试与调试", link: "/python/expert/测试与调试" },
           ],
