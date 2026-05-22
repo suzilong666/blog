@@ -35,6 +35,7 @@ export default defineConfig({
       { text: "性能", link: "/performance/vendor文件体积过大如何解决" },
       { text: "其他", link: "/other/资源" },
       { text: "Python", link: "/python/basic/环境搭建" },
+      { text: "AI", link: "/ai/basic/大模型概述" },
     ],
     // 侧边栏
     sidebar: {
@@ -314,6 +315,49 @@ export default defineConfig({
             { text: "pip", link: "/python/tools/pip" },
             { text: "虚拟环境", link: "/python/tools/虚拟环境" },
             { text: "代码规范", link: "/python/tools/代码规范" },
+          ],
+        },
+      ],
+      ai: [
+        {
+          text: "第一阶段：基础入门",
+          items: [
+            { text: "大模型概述", link: "/ai/basic/大模型概述" },
+            { text: "Prompt工程基础", link: "/ai/basic/Prompt工程基础" },
+            { text: "环境搭建", link: "/ai/basic/环境搭建" },
+          ],
+        },
+        {
+          text: "第二阶段：核心API与框架",
+          items: [
+            { text: "OpenAI API详解", link: "/ai/api/OpenAI_API详解" },
+            { text: "Claude API详解", link: "/ai/api/Claude_API详解" },
+            { text: "LangChain入门", link: "/ai/framework/LangChain入门" },
+            { text: "本地模型部署", link: "/ai/framework/本地模型部署" },
+          ],
+        },
+        {
+          text: "第三阶段：高级应用开发",
+          items: [
+            { text: "RAG实战", link: "/ai/advanced/RAG实战" },
+            { text: "Agent开发", link: "/ai/advanced/Agent开发" },
+            { text: "多模态应用", link: "/ai/advanced/多模态应用" },
+            { text: "性能优化", link: "/ai/advanced/性能优化" },
+          ],
+        },
+        {
+          text: "第四阶段：实战项目",
+          items: [
+            { text: "智能客服系统", link: "/ai/projects/智能客服系统" },
+            { text: "代码助手", link: "/ai/projects/代码助手" },
+            { text: "数据分析助手", link: "/ai/projects/数据分析助手" },
+          ],
+        },
+        {
+          text: "第五阶段：进阶与部署",
+          items: [
+            { text: "模型微调", link: "/ai/expert/模型微调" },
+            { text: "生产部署", link: "/ai/expert/生产部署" },
           ],
         },
       ],
